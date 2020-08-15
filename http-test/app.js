@@ -46,6 +46,7 @@ GET
 [Object: null prototype] {}
 */
 
+/* 处理POST请求
 const http = require('http')
 
 const server = http.createServer((req, res) => {
@@ -64,6 +65,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(3000)
 console.log('ok')
+*/
 
 /*
 content-type:  application/json
@@ -72,3 +74,42 @@ content-type:  application/json
     "number":"007"
 }
 */
+
+const http = require('http')
+const querystring = require('querystring')
+
+const server = http.createServer((req, res) => {
+  const method = req.method
+  const url = req.url
+  const path = url.split('?')[0]
+  const query = querystring.parse(url.split('?')[1])
+
+  res.setHeader('content-type', 'application/json')
+  
+  const resData = {
+    method,
+    url,
+    path,
+    query
+  }
+  if (method === 'GET') {
+    res.end(
+      JSON.stringify(resData)
+    ) // {"method":"GET","url":"/api/book/list?author=diguo&number=4","path":"/api/book/list","query":{"author":"diguo","number":"4"}}
+  } 
+  if (method === 'POST') {
+    let postData = ''
+    req.on('data', chunk => {
+      postData += chunk.toString()
+    })
+    req.on('end', () => {
+      resData.postData = postData
+      res.end(
+        JSON.stringify(resData)
+      )
+    })
+  }
+})
+
+server.listen(3000)
+console.log('ok')
