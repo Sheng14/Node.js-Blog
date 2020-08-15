@@ -91,13 +91,13 @@ const server = http.createServer((req, res) => {
     url,
     path,
     query
-  }
-  if (method === 'GET') {
+  } // 定义一个对象保存上面获得的各种数据
+  if (method === 'GET') { // 如果是GET请求就直接把数据返回
     res.end(
       JSON.stringify(resData)
     ) // {"method":"GET","url":"/api/book/list?author=diguo&number=4","path":"/api/book/list","query":{"author":"diguo","number":"4"}}
   } 
-  if (method === 'POST') {
+  if (method === 'POST') { // 如果是POST请求则需要定义多一根postData来接收传来的数据并且整合到resData中一起返回。
     let postData = ''
     req.on('data', chunk => {
       postData += chunk.toString()
