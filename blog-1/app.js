@@ -1,12 +1,16 @@
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
+const querystring = require('querystring')
 
 const serverHandle = (req, res) => {
     res.setHeader('Content-type', 'application/json') // 设置返回的格式
     const url = req.url
     req.path = url.split('?')[0]
      // 获取都要用到的url和path各地就无需再获取了（因为你调用外面的函数传入的req res也还是这里获取的，这里加了另外的属性，传入就自然有）
-
+    
+     // 获取query，方便各地使用
+    req.query = querystring.parse(url.split('?')[1])
+    
     const blogData = handleBlogRouter(req, res)
     if (blogData) {
       res.end(

@@ -1,10 +1,13 @@
+const { getList } = require('../controller/blog')
+const { SuccessModel, ErrorModel } = require('../model/resModel')
 const handleBlogRouter = (req, res) => {
     const method = req.method
     
     if (method === 'GET' && req.path === '/api/blog/list') {
-        return {
-            message: '这是获取博客列表的接口'
-        }
+        const author = req.query.author || ''
+        const keyword = req.query.keyword || '' // 自然是拿到参数才能传递给函数
+        const listData = getList(author, keyword) // 拿到函数返回的数组
+        return new SuccessModel(listData) // 丢给类做返回数据的处理（就加一个正确错误标识）
     }
 
     if (method === 'GET' && req.path === '/api/blog/detail') {
