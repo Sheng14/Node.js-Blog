@@ -16,6 +16,19 @@ const getList = (author, keyword) => { // 这个就是假装根据了传入的�
         }
     ]
 }
+
+const getDetail = (id) => {
+    return [
+        {
+            id: 2,
+            title: "标题B",
+            content: "内容B",
+            createTime: 1597571055908,
+            author: "qibing"
+        }        
+    ]
+}
 module.exports = {
-    getList
+    getList,
+    getDetail
 }
