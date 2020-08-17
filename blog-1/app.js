@@ -15,10 +15,10 @@ const getPostData = (req) => { // 异步获取postData即POST请求发送过来�
       return
     }
     let postData = '' // 接下来就是获取postData
-    res.on('data', (chunk) => {
+    req.on('data', (chunk) => {
       postData += chunk.toString()
     })
-    res.on('end', () => {
+    req.on('end', () => {
       if (!postData) { // 如果不存在postData则也发挥空
         resolve({})
         return
