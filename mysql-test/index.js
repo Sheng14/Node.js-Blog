@@ -14,6 +14,7 @@ const sql = 'select * from blogs' // 定义查询语句
 con.query(sql, (err, result) => { // 执行查询语句
     if (err) {
         console.log(err)
+        return
     } else {
         console.log(result)
     }
