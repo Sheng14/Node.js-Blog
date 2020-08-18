@@ -42,12 +42,21 @@ const serverHandle = (req, res) => {
     
     getPostData(req).then((postData) => { // 使用获取postData的方法
       req.body = postData // 将拿到的postData塞到req里面（body本身没有东西）方便各地使用
-      const blogData = handleBlogRouter(req, res)
+     /* const blogData = handleBlogRouter(req, res)
       if (blogData) {
         res.end(
           JSON.stringify(blogData)
         )
         return // 记得return，不然会一直发送，因为一直满足条件嘛
+      } 这些都是因为返回的是数据而如此处理，现在返回的是promise，故改一下*/
+      const blogResult = handleBlogRouter(req, res) // 调用函数拿到获得数据的promise
+      if (blogResult) {
+        blogResult.then((blogData) => { // 拿出其中的数据发给客户端
+          res.end(
+            JSON.stringify(blogData)
+          )
+        })
+        return
       }
   
       const userData = handleUserRouter(req, res)
