@@ -21,13 +21,22 @@ const handleBlogRouter = (req, res) => {
     }
 
     if (method === 'GET' && req.path === '/api/blog/detail') {
-        const detailData = getDetail(id)
-        return new SuccessModel(detailData)
+      /*  const detailData = getDetail(id)
+        return new SuccessModel(detailData)*/
+        const detailResult = getDetail(id)
+        return detailResult.then((detailData) => {
+            return new SuccessModel(detailData)
+        })
     }
 
     if (method === 'POST' && req.path === '/api/blog/new') {
-        const data = newBlog(req.body)
-        return new SuccessModel(data)
+      /*  const data = newBlog(req.body)
+        return new SuccessModel(data)*/
+        req.body.author = 'nuoduo' // 自定义一个假数据
+        const result = newBlog(req.body)
+        return result.then((data) => {
+            return new SuccessModel(data)
+        })
     }
 
     if (method === 'POST' && req.path === '/api/blog/update') {
