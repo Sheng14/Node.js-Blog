@@ -35,11 +35,27 @@ const newBlog = (blogData = {}) => { // 新建博客
 }
 
 const updateBlog = (id, blogData = {}) => { // 更新博客
-    return true
+    const title = blogData.title
+    const content = blogData.content // 拿到需要更新的内容
+    const sql = `update blogs set title='${title}', content='${content}' where id='${id}'`
+    return exec(sql).then((updateData) => { // 更新，根据影响行数判断更新成功or失败
+        if (updateData.affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+    })
 }
 
-const delBlog = (id) => { // 删除博客
-    return true
+const delBlog = (id, author) => { // 删除博客
+    const sql = `delete from blogs where id='${id}' and author='${author}'` // 根据id和author双重保险删除（别的作者也有id同的情况故2条件）
+    return exec(sql).then((deleteData) => {
+        if (deleteData.affectedRows > 0) { // 根据行数判断删除成功or失败
+            return true
+        } else {
+            return false
+        }
+    })
 }
 
 module.exports = {
