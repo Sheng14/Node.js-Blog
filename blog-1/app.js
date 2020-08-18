@@ -59,11 +59,13 @@ const serverHandle = (req, res) => {
         return
       }
   
-      const userData = handleUserRouter(req, res)
-      if (userData) {
-        res.end(
-          JSON.stringify(userData)
-        )
+      const userResult = handleUserRouter(req, res)
+      if (userResult) {
+        userResult.then((userData) => {
+          res.end(
+            JSON.stringify(userData)
+          )
+        })
         return
       }
       // 处理没有命中以上两种路由的情况，不处理的话就会一直加载中
