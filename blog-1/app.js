@@ -40,6 +40,25 @@ const serverHandle = (req, res) => {
      // 获取query，方便各地使用
     req.query = querystring.parse(url.split('?')[1])
     
+    // 解析cookie
+    req.cookie = {} // 定义一个存放cookie的对象
+    const cookieStr = req.headers.cookie || '' // 拿到cookie字符串或者空字符串
+    cookieStr.split(';').forEach(item => { // 通过；分割出一组cookie
+      if (!item) {
+        return
+      }
+      const arr = item.split('=') // 通过=分割每一组cookie的key和value
+      const key = arr[0]
+      const value = arr[1]
+      req.cookie[key] = value
+    })
+    console.log(req.cookie) // 到此各地皆可以使用req.cookie来获取已经解析完成的cookie了
+    /* 解析结果：
+    {
+      username: '14',
+      ' Hm_lvt_70b7d1f99329b1ded9b60564cd0c45f6': '1591789578,1591930187,1592016696,1592034016'
+    }*/
+
     getPostData(req).then((postData) => { // 使用获取postData的方法
       req.body = postData // 将拿到的postData塞到req里面（body本身没有东西）方便各地使用
      /* const blogData = handleBlogRouter(req, res)
@@ -49,7 +68,7 @@ const serverHandle = (req, res) => {
         )
         return // 记得return，不然会一直发送，因为一直满足条件嘛
       } 这些都是因为返回的是数据而如此处理，现在返回的是promise，故改一下*/
-      const blogResult = handleBlogRouter(req, res) // 调用函数拿到获得数据的promise
+      const blogResult = handleBlogRouter(req, res) // 调用函数拿到获得数据的promise 管理博客路由
       if (blogResult) {
         blogResult.then((blogData) => { // 拿出其中的数据发给客户端
           res.end(
@@ -59,7 +78,7 @@ const serverHandle = (req, res) => {
         return
       }
   
-      const userResult = handleUserRouter(req, res)
+      const userResult = handleUserRouter(req, res) // 管理用户路由
       if (userResult) {
         userResult.then((userData) => {
           res.end(
