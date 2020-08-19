@@ -30,6 +30,14 @@ const getPostData = (req) => { // 异步获取postData即POST请求发送过来�
   })
   return promise
 }
+const getCookieExpires = () => { // 设置cookie的过期时间（当前时间加一天）
+  const d = new Date()
+  d.setTime(d.getTime() + (24 * 60 * 60 * 1000))
+  console.log(d.toGMTString())
+  return d.toGMTString() // 转换成GMT格式
+}
+
+const SESSION_DATA = {} // 定义一个全局变量的session
 
 const serverHandle = (req, res) => {
     res.setHeader('Content-type', 'application/json') // 设置返回的格式
@@ -59,6 +67,20 @@ const serverHandle = (req, res) => {
       ' Hm_lvt_70b7d1f99329b1ded9b60564cd0c45f6': '1591789578,1591930187,1592016696,1592034016'
     }*/
 
+    // 解析session
+    let needSetCookie = false // 判断是否需要修改cookie（默认是false，只有当cookie中的userId不存在才需要）
+    let userId = req.cookie.userId // 获取cookie中的userId
+    if (userId) { // 如果cookie存在userId就可以判断全局的session中有没有
+      if (!SESSION_DATA[userId]) { // 有就直接赋值给req的session了，如果没有就开辟这个属性，且值为空对象（等到登录路由那里填充）
+        SESSION_DATA[userId] = {}
+      }
+    } else { //如果cookie不存在这个userId，我们就创造一个userId，同时开辟session中对应userId的空间
+      needSetCookie = true
+      userId = `${Date.now()}_${Math.random()}`
+      SESSION_DATA[userId] = {}
+    }
+    req.session = SESSION_DATA[userId] // 说到底就是为了根据cookie中userId对应的值在存放session数据里开一个对应id的空间存储信息
+
     getPostData(req).then((postData) => { // 使用获取postData的方法
       req.body = postData // 将拿到的postData塞到req里面（body本身没有东西）方便各地使用
      /* const blogData = handleBlogRouter(req, res)
@@ -71,6 +93,9 @@ const serverHandle = (req, res) => {
       const blogResult = handleBlogRouter(req, res) // 调用函数拿到获得数据的promise 管理博客路由
       if (blogResult) {
         blogResult.then((blogData) => { // 拿出其中的数据发给客户端
+          if (needSetCookie) { // 如果需要设置cookie就在路由返回前把cookie给设置了。
+            res.setHeader('Set-Cookie', `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+          }
           res.end(
             JSON.stringify(blogData)
           )
@@ -81,6 +106,9 @@ const serverHandle = (req, res) => {
       const userResult = handleUserRouter(req, res) // 管理用户路由
       if (userResult) {
         userResult.then((userData) => {
+          if (needSetCookie) {
+            res.setHeader('Set-Cookie', `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+          }
           res.end(
             JSON.stringify(userData)
           )
