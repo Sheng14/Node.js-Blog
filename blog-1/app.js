@@ -48,8 +48,8 @@ const serverHandle = (req, res) => {
         return
       }
       const arr = item.split('=') // 通过=分割每一组cookie的key和value
-      const key = arr[0]
-      const value = arr[1]
+      const key = arr[0].trim()
+      const value = arr[1].trim()
       req.cookie[key] = value
     })
     console.log(req.cookie) // 到此各地皆可以使用req.cookie来获取已经解析完成的cookie了
