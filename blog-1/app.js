@@ -79,7 +79,8 @@ const serverHandle = (req, res) => {
       userId = `${Date.now()}_${Math.random()}`
       SESSION_DATA[userId] = {}
     }
-    req.session = SESSION_DATA[userId] // 说到底就是为了根据cookie中userId对应的值在存放session数据里开一个对应id的空间存储信息
+    req.session = SESSION_DATA[userId]
+     // 说到底就是为了根据cookie中userId对应的值在存放session数据里开一个对应id的空间方便各地存储session信息
 
     getPostData(req).then((postData) => { // 使用获取postData的方法
       req.body = postData // 将拿到的postData塞到req里面（body本身没有东西）方便各地使用
