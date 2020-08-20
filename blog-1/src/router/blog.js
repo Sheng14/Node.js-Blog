@@ -5,6 +5,14 @@ const { getList,
         delBlog
      } = require('../controller/blog')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
+// 登录验证函数
+const LoginCheck = (req) => {
+    if (!req.sessison.username) {
+        return Promise.resolve(
+            new ErrorModel('尚未登录')
+        )
+    }
+}
 const handleBlogRouter = (req, res) => {
     const method = req.method
     const id = req.query.id || ''
@@ -32,7 +40,12 @@ const handleBlogRouter = (req, res) => {
     if (method === 'POST' && req.path === '/api/blog/new') {
       /*  const data = newBlog(req.body)
         return new SuccessModel(data)*/
-        req.body.author = 'nuoduo' // 自定义一个假数据
+        const LoginCheckResult = LoginCheck(req)
+        if (LoginCheckResult) { // 如果有值说明并没有登录则会return而不会执行下面的内容
+            return
+        }
+        // req.body.author = 'nuoduo' // 自定义一个假数据
+        req.body.author = req.sessison.username
         const result = newBlog(req.body)
         return result.then((data) => {
             return new SuccessModel(data)
@@ -46,6 +59,10 @@ const handleBlogRouter = (req, res) => {
         } else {
             return new ErrorModel('更新博客失败')
         }*/
+        const LoginCheckResult = LoginCheck(req)
+        if (LoginCheckResult) {
+            return
+        }
         const result = updateBlog(id, req.body) // 把要删除的id和postData（即更新的内容）传入
         return result.then((updateData) => {
             if (updateData) {
@@ -63,7 +80,12 @@ const handleBlogRouter = (req, res) => {
         } else {
             return new ErrorModel('删除博客失败')
         }*/
-        const author = 'nuoduo' // 假数据
+        const LoginCheckResult = LoginCheck(req)
+        if (LoginCheckResult) {
+            return
+        }
+        // const author = 'nuoduo' // 假数据
+        const author = req.sessison.username
         const result = delBlog(id, author)
         return result.then((deleteData) => {
             if (deleteData) {

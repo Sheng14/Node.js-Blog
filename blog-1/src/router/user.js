@@ -17,8 +17,9 @@ const handleUserRouter = (req, res) => { // 为cookie设置过期时间
             }
         })
     }*/
-    if (method === 'GET' && req.path === '/api/user/login') { // 仅仅是作为测试使用
-        const { username, password } = req.query
+    if (method === 'POST' && req.path === '/api/user/login') {
+        // const { username, password } = req.query
+        const { username, password } = req.body
         const result = loginCheck(username, password) // 调用登录函数
         return result.then((resultData) => {
             if (resultData.username) { // 查询找不到时返回空对象没有东西肯定就是false，自然就登录失败
@@ -34,7 +35,7 @@ const handleUserRouter = (req, res) => { // 为cookie设置过期时间
         })
     }
 
-    if (method === 'GET' && req.path === '/api/user/login-test') {
+    /*if (method === 'GET' && req.path === '/api/user/login-test') {
         if (req.session.username) { // 现在是通过session来判断了，cookie只剩下一个userId
             // 通过查看cookie里面有没有username这个key判断是否登录成功（注意有个坑，如果username被加上‘’就会默认不存在）
             return Promise.resolve(new SuccessModel({
@@ -43,7 +44,7 @@ const handleUserRouter = (req, res) => { // 为cookie设置过期时间
             // {"data":{"session":{"username":"qibin","realname":"骑兵"}},"errno":0} session返回的内容
         }
         return Promise.resolve(new ErrorModel('尚未登录'))
-    }
+    }*/
 }
 
 module.exports = handleUserRouter
