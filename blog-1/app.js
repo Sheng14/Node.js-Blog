@@ -3,6 +3,7 @@ const handleUserRouter = require('./src/router/user')
 const querystring = require('querystring')
 const { resolve } = require('path')
 const { rejects } = require('assert')
+const { set, get } = require('./src/db/redis')
 
 const getPostData = (req) => { // 异步获取postData即POST请求发送过来的内容（需要接收一个请求req）
   const promise = new Promise((resolve, reject) => { // 不需要reject，因为没有错误只有其它情况
@@ -37,7 +38,7 @@ const getCookieExpires = () => { // 设置cookie的过期时间（当前时间�
   return d.toGMTString() // 转换成GMT格式
 }
 
-const SESSION_DATA = {} // 定义一个全局变量的session
+ // const SESSION_DATA = {} // 定义一个全局变量的session
 
 const serverHandle = (req, res) => {
     res.setHeader('Content-type', 'application/json') // 设置返回的格式
@@ -68,7 +69,7 @@ const serverHandle = (req, res) => {
     }*/
 
     // 解析session
-    let needSetCookie = false // 判断是否需要修改cookie（默认是false，只有当cookie中的userId不存在才需要）
+    /*let needSetCookie = false // 判断是否需要修改cookie（默认是false，只有当cookie中的userId不存在才需要）
     let userId = req.cookie.userId // 获取cookie中的userId
     if (userId) { // 如果cookie存在userId就可以判断全局的session中有没有
       if (!SESSION_DATA[userId]) { // 有就直接赋值给req的session了，如果没有就开辟这个属性，且值为空对象（等到登录路由那里填充）
@@ -79,10 +80,33 @@ const serverHandle = (req, res) => {
       userId = `${Date.now()}_${Math.random()}`
       SESSION_DATA[userId] = {}
     }
-    req.session = SESSION_DATA[userId]
+    req.session = SESSION_DATA[userId]*/
      // 说到底就是为了根据cookie中userId对应的值在存放session数据里开一个对应id的空间方便各地存储session信息
 
-    getPostData(req).then((postData) => { // 使用获取postData的方法
+    // 解析session（利用redis）
+    let needSetCookie = false
+    let userId = req.cookie.userId
+    if (!userId) {
+      needSetCookie = true
+      userId = `${Date.now()}_${Math.random()}`
+      // 设置redis中的session（不要管是userId还是sessionId，反正就是同一个时间戳而已）
+      set(userId, {}) 
+      // 127.0.0.1:6379> get 1597912518141_0.7153950171260812 "{}"
+    }
+    // 获取session
+    req.sessionId = userId // 同一个时间戳换个表达而已,才能让各地使用
+    get(req.sessionId).then((sessionData) => { // 这里的sessionData就是根据key即sessionId拿到对应的值（可能找不到即为null）
+      if (sessionData == null) {
+        set(req.sessionId, {}) // 似乎没有必要，之前已经设置过时间戳为空对象，但是！！那是因为不存在userId才走的！！
+        req.session = {} // 再把当前session置空（开辟空间）
+      } else {
+        req.session = sessionData
+// 对应值给  127.0.0.1:6379> get 1597912518141_0.7153950171260812 "{\"username\":\"qibin\",\"realname\":\"\xe9\xaa\x91\xe5\x85\xb5\"}"
+      }
+      console.log(sessionData)
+      return getPostData(req)
+    })
+    .then((postData) => { // 使用获取postData的方法
       req.body = postData // 将拿到的postData塞到req里面（body本身没有东西）方便各地使用
      /* const blogData = handleBlogRouter(req, res)
       if (blogData) {

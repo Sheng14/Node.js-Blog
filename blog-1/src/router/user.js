@@ -1,5 +1,6 @@
 const { loginCheck } = require('../controller/user')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
+const { set } = require('../db/redis')
 
 const handleUserRouter = (req, res) => { // 为cookie设置过期时间
     const method = req.method
@@ -23,6 +24,7 @@ const handleUserRouter = (req, res) => { // 为cookie设置过期时间
             if (resultData.username) { // 查询找不到时返回空对象没有东西肯定就是false，自然就登录失败
                 req.session.username = resultData.username
                 req.session.realname = resultData.realname // 在这里用的话就直接设置session的值（已经是对应userId）
+                set(req.sessionId, req.session) // 设置redis中的session
                 // res.setHeader('Set-Cookie', `username=${username}; path=/; httpOnly; expires=${getCookieExpires()}`) // 如果查询得到就把设置好cookie，只要是3000端口下的cookie都有这个
                 // 注意这里设置的是返回的headers，具体可以看浏览器的response header
                 return new SuccessModel()

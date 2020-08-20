@@ -9,8 +9,8 @@ redisClient.on('error', err => {
 
 // 定义设置redis的方法
 function set (key, val) {
-    if (val === 'object') { // 如果值是对象则转换为json字符串
-        JSON.stringify(val)
+    if (typeof val === 'object') { // 如果值是对象则转换为json字符串
+        val = JSON.stringify(val)
     }
     redisClient.set(key, val, redis.print)
 }
