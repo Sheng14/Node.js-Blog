@@ -85,11 +85,11 @@
                 $container.append($(`
                     <div class="title-wrapper">
                         <p class="title">
-                        <a href="/detail.html?id=${item.id}" target="_blank">${item.title}</a>
+                        <a href="http://localhost:8080/html-test/detail?id=${item.id}" target="_blank">${item.title}</a>
                         </p>
                         <div class="info-wrapper">
                             <span>
-                                <a href="/index.html?author=${item.author}">${item.author}</a>
+                                <a href="http://localhost:8080/html-test/index.html?author=${item.author}">${item.author}</a>
                             </span>
                             <span>${getFormatDate(item.createtime)}</span>
                         </div>

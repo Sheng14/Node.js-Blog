@@ -42,7 +42,7 @@ const handleBlogRouter = (req, res) => {
         return new SuccessModel(data)*/
         const LoginCheckResult = LoginCheck(req)
         if (LoginCheckResult) { // 如果有值说明并没有登录则会return而不会执行下面的内容
-            return
+            return LoginCheckResult
         }
         // req.body.author = 'nuoduo' // 自定义一个假数据
         req.body.author = req.sessison.username
@@ -61,7 +61,7 @@ const handleBlogRouter = (req, res) => {
         }*/
         const LoginCheckResult = LoginCheck(req)
         if (LoginCheckResult) {
-            return
+            return LoginCheckResult
         }
         const result = updateBlog(id, req.body) // 把要删除的id和postData（即更新的内容）传入
         return result.then((updateData) => {
@@ -82,7 +82,7 @@ const handleBlogRouter = (req, res) => {
         }*/
         const LoginCheckResult = LoginCheck(req)
         if (LoginCheckResult) {
-            return
+            return LoginCheckResult
         }
         // const author = 'nuoduo' // 假数据
         const author = req.sessison.username
@@ -98,4 +98,4 @@ const handleBlogRouter = (req, res) => {
 }
 
 module.exports = handleBlogRouter
-//这里是定义博客的路由
+//这里是定义博客的路由 <a href="/detail.html?id=${item.id}" target="_blank">${item.title}</a> <a href="/index.html?author=${item.author}">${item.author}</a>
