@@ -29,7 +29,8 @@
 <body>
     <h1 style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">管理中心</h1>
     <p>
-        <a href="/new.html">新建博客</a>
+       <!--<a href="/new.html">新建博客</a>-->
+        <a href="http://localhost:8080/html-test/new">新建博客</a>
     </p>
     <div style="margin-bottom: 10px;">
         <input id="text-keyword">
@@ -101,7 +102,7 @@
                             <a href="/detail.html?id=${item.id}" target="_blank">${item.title}</a>
                         </td>
                         <td>
-                            <a href="/edit.html?id=${item.id}">编辑</a>
+                            <a href="http://localhost:8080/html-test/edit?id=${item.id}">编辑</a>
                         </td>
                         <td>
                             <a data-id="${item.id}" class="item-del">删除</a>
@@ -114,7 +115,8 @@
         // 搜索
         $btnSearch.click(() => {
             const keyword = $textKeyword.val()
-            location.href = '/admin.html?keyword=' + keyword
+          //  location.href = '/admin.html?keyword=' + keyword
+          location.href = 'http://localhost:8080/html-test/admin.html?keyword=' + keyword
         })
 
         // 删除

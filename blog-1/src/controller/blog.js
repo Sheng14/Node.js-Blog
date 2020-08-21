@@ -1,7 +1,7 @@
 const { exec } = require('../db/mysql')
 
 const getList = (author, keyword) => { // 获取博客列表 这个就是假装根据了传入的参数返回对应的数据！（格式至少是正确的）
-    let sql = 'select * from blogs where 1=1 ' // 定义查询语句且占位
+    let sql = `select * from blogs where 1=1 ` // 定义查询语句且占位
     if (author) { // 如果有作者则加一个条件（最后记得空格）
         sql += `and author='${author}' `
     }

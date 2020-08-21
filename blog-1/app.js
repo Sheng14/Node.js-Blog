@@ -104,6 +104,7 @@ const serverHandle = (req, res) => {
 // 对应值给  127.0.0.1:6379> get 1597912518141_0.7153950171260812 "{\"username\":\"qibin\",\"realname\":\"\xe9\xaa\x91\xe5\x85\xb5\"}"
       }
       console.log(sessionData)
+      console.log(req.session)
       return getPostData(req)
     })
     .then((postData) => { // 使用获取postData的方法
