@@ -16,7 +16,7 @@ fs.readFile(fileName, (err,data) => {
 const content = '帝国长枪兵\n' // 随便写入点东西，这里还换行了！
 const opt = {
     flag: 'a'
-} // 定义写入的形式，a代表追加写入
+} // 定义写入的形式， a代表追加写入
 fs.writeFile(fileName, content, opt, (err) => {
     if (err) {
         console.log(err)
