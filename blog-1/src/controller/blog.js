@@ -1,4 +1,5 @@
 const { exec } = require('../db/mysql')
+const xss = require('xss')
 
 const getList = (author, keyword) => { // 获取博客列表 这个就是假装根据了传入的参数返回对应的数据！（格式至少是正确的）
     let sql = `select * from blogs where 1=1 ` // 定义查询语句且占位
@@ -20,8 +21,8 @@ const getDetail = (id) => { // 获取博客详情
 }
 
 const newBlog = (blogData = {}) => { // 新建博客
-    const title = blogData.title
-    const content = blogData.content
+    const title = xss(blogData.title)
+    const content = xss(blogData.content)
     const author = blogData.author // 从博客对象拿到对于的各种数据
     const createtime = Date.now()
 
