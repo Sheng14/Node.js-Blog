@@ -22,7 +22,7 @@ const getDetail = (id) => { // 获取博客详情
 
 const newBlog = (blogData = {}) => { // 新建博客
     const title = xss(blogData.title)
-    const content = xss(blogData.content)
+    const content = xss(blogData.content) // 针对需要用户的数据注意预防xss注入！
     const author = blogData.author // 从博客对象拿到对于的各种数据
     const createtime = Date.now()
 
