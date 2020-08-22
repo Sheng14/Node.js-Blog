@@ -4,6 +4,7 @@ const querystring = require('querystring')
 const { resolve } = require('path')
 const { rejects } = require('assert')
 const { set, get } = require('./src/db/redis')
+const { access } = require('./src/utils/logs') 
 
 const getPostData = (req) => { // 异步获取postData即POST请求发送过来的内容（需要接收一个请求req）
   const promise = new Promise((resolve, reject) => { // 不需要reject，因为没有错误只有其它情况
@@ -42,6 +43,7 @@ const getCookieExpires = () => { // 设置cookie的过期时间（当前时间�
 
 const serverHandle = (req, res) => {
     res.setHeader('Content-type', 'application/json') // 设置返回的格式
+    access(`${req.method} -- ${req.url} -- ${req.headers['user-agent']} -- ${Date.now()}`) // 打印日志到文件
     const url = req.url
     req.path = url.split('?')[0]
      // 获取都要用到的url和path各地就无需再获取了（因为你调用外面的函数传入的req res也还是这里获取的，这里加了另外的属性，传入就自然有）
