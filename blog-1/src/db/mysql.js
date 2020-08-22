@@ -19,5 +19,6 @@ function exec (sql) { // 执行数据库操作
 }
 
 module.exports = {
-    exec
+    exec,
+    excape: mysql.escape // 暴露mysql自带的处理特殊字符的方法
 }

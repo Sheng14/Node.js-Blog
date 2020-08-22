@@ -1,6 +1,9 @@
-const { exec } = require('../db/mysql')
+const { exec, excape } = require('../db/mysql')
 const loginCheck = (username, password) => {
-    const sql = `select * from users where username='${username}' and password='${password}'` // 根据拿到的密码和用户名进行条件查询
+    username = excape(username)
+    password = excape(password) // 对传入的参数进行特殊字符的处理，同时下面的也需要去掉‘’
+    const sql = `select * from users where username=${username} and password=${password}` // 根据拿到的密码和用户名进行条件查询
+    console.log(sql)
     return exec(sql).then((loginData) => {
         return loginData[0] || {} // 如果存在则返回查询结果对象数组的第一项，否则返回空对象
     })
@@ -9,3 +12,4 @@ const loginCheck = (username, password) => {
 module.exports = {
     loginCheck
 }
+// select * from users where username='bubing\'--' and password='11111'这里就是多加了一个\来转义掉‘
