@@ -4,26 +4,26 @@ var path = require('path');
 var cookieParser = require('cookie-parser'); // 解析cookie方便各地使用
 var logger = require('morgan'); // 处理日志access那一块
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users'); // 引入路由
+ // var indexRouter = require('./routes/index');
+ // var usersRouter = require('./routes/users'); // 引入路由
 const blogRouter = require('./routes/blog');
 const userRouter = require('./routes/user');
 
 var app = express(); // 注册实例，监听客户端请求
 
 // view engine setup 这里主要是处理前端引擎的，我们可以不管
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 app.use(logger('dev')); // 注册日志，有一些配置后面讲
 app.use(express.json()); // 处理post请求中的数据 注：content-type是application/json的时候 各地可以通过req.body访问到数据
 app.use(express.urlencoded({ extended: false })); // 处理post请求中的数据 住：content-type不是上面那种情况的时候（如x-www-啥啥啥）
 app.use(cookieParser()); // 注册cookie，各地可以通过req.cookies访问
-app.use(express.static(path.join(__dirname, 'public'))); // 处理静态资源，这里用不到，我们也不用管
+// app.use(express.static(path.join(__dirname, 'public'))); // 处理静态资源，这里用不到，我们也不用管
 
 // 注册完，接下来就是路由处理
-app.use('/', indexRouter);
-app.use('/users', usersRouter); // 注册路由，且加是父路径！
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter); // 注册路由，且加是父路径！
 app.use('/api/blog', blogRouter);
 app.use('/api/user', userRouter);
 
