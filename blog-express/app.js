@@ -6,6 +6,8 @@ var logger = require('morgan'); // 处理日志access那一块
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users'); // 引入路由
+const blogRouter = require('./routes/blog');
+const userRouter = require('./routes/user');
 
 var app = express(); // 注册实例，监听客户端请求
 
@@ -22,6 +24,8 @@ app.use(express.static(path.join(__dirname, 'public'))); // 处理静态资源�
 // 注册完，接下来就是路由处理
 app.use('/', indexRouter);
 app.use('/users', usersRouter); // 注册路由，且加是父路径！
+app.use('/api/blog', blogRouter);
+app.use('/api/user', userRouter);
 
 // catch 404 and forward to error handler 如果路径不符合上面引入的路由就会404，进而触发这个函数
 app.use(function(req, res, next) {
