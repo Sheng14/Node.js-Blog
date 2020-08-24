@@ -1,10 +1,11 @@
 var createError = require('http-errors'); // 主要是处理路由错误例如404，可以不关心
 var express = require('express');
-var path = require('path');
 var cookieParser = require('cookie-parser'); // 解析cookie方便各地使用
 var logger = require('morgan'); // 处理日志access那一块
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session) // 立即执行
+const fs = require('fs')
+const path = require('path')
 
  // var indexRouter = require('./routes/index');
  // var usersRouter = require('./routes/users'); // 引入路由
@@ -17,7 +18,23 @@ var app = express(); // 注册实例，监听客户端请求
  app.set('views', path.join(__dirname, 'views'));
  app.set('view engine', 'jade');
 
-app.use(logger('dev')); // 注册日志，有一些配置后面讲
+// app.use(logger('dev')); // 注册日志，有一些配置后面讲
+// 日志处理
+const ENV = process.env.NODE_ENV // 获取当前的环境
+if (ENV !== 'production') { // 即生产环境下
+  app.use(logger('dev',{
+    stream: process.stdout // 直接在控制台输出
+  }))
+} else { // 线上环境
+  const fileName = path.join(__dirname, '/logs', 'access.log')
+  const writeStream = fs.createWriteStream(fileName, {
+    flags: 'a'
+  }) // 获取文件名和流对象
+  app.use(logger('combined', {
+    stream: writeStream // 写入到文件
+  }))
+}
+
 app.use(express.json()); // 处理post请求中的数据 注：content-type是application/json的时候 各地可以通过req.body访问到数据
 app.use(express.urlencoded({ extended: false })); // 处理post请求中的数据 住：content-type不是上面那种情况的时候（如x-www-啥啥啥）
 app.use(cookieParser()); // 注册cookie，各地可以通过req.cookies访问
