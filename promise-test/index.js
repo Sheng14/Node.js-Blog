@@ -14,7 +14,7 @@ function getFileByCallback (fileName, callback) {
         )
     })
 }
-getFileByCallback('a.json', (aData) => {
+/*getFileByCallback('a.json', (aData) => {
     console.log('c', aData)
     getFileByCallback('b.json', (bData) => {
         console.log(bData)
@@ -22,7 +22,7 @@ getFileByCallback('a.json', (aData) => {
             console.log(cData)
         })
     })
-})
+})*/
 
 function getFileByPromise (fileName) {
     const promise = new Promise((resolve, reject) => {
@@ -40,7 +40,7 @@ function getFileByPromise (fileName) {
     return promise
 }
 
-getFileByPromise('a.json')
+/*getFileByPromise('a.json')
 .then((aData) => {
     console.log('p', aData)
     return getFileByPromise('b.json')
@@ -51,7 +51,7 @@ getFileByPromise('a.json')
 })
 .then((cData) => {
     console.log(cData)
-})
+})*/
 
 /* 执行结果
 c { next: 'b.json', msg: 'this is a' }
@@ -61,3 +61,41 @@ p { next: 'b.json', msg: 'this is a' }
 { next: 'null', msg: 'this is c' }
 { next: 'null', msg: 'this is c' }
 */
+
+async function readFileData () {
+    try {
+        const aData = await getFileByPromise('a.json')
+        console.log('aData:', aData)
+        const bData = await getFileByPromise(aData.next)
+        console.log('bData:', bData)
+        const cData = await getFileByPromise(bData.next)
+        console.log('cData:', cData)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+readFileData() // 测试async和await
+
+async function readAdata () {
+    const aData = await getFileByPromise('a.json')
+    return aData
+}
+async function test () {
+    const aData = await readAdata()
+    console.log(aData)
+}
+test() // 测试async返回的是否是promise（是）是否可以跟在await后面（可以）
+
+/* 执行结果
+aData: { next: 'b.json', msg: 'this is a' }
+{ next: 'b.json', msg: 'this is a' }       
+bData: { next: 'c.json', msg: 'this is b' }
+cData: { next: 'null', msg: 'this is c' } 
+*/
+
+// async await 要点：
+// 1. await 后面可以追加 promise 对象，获取 resolve 的值
+// 2. await 必须包裹在 async 函数里面
+// 3. async 函数执行返回的也是一个 promise 对象
+// 4. try-catch 截获 promise 中 reject 的值
