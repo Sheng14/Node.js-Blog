@@ -23,10 +23,10 @@ app.use(express.urlencoded({ extended: false })); // 处理post请求中的数�
 app.use(cookieParser()); // 注册cookie，各地可以通过req.cookies访问
 // app.use(express.static(path.join(__dirname, 'public'))); // 处理静态资源，这里用不到，我们也不用管
 
-/*const redisClient = require('./db/redis') // 引入创建好的客户端
+const redisClient = require('./db/redis') // 引入创建好的客户端
 const sessionStore = new RedisStore({
   client: redisClient
-}) // 生成新的储存session的空间*/
+}) // 生成新的储存session的空间
 
 // 处理session
 app.use(session({
@@ -36,7 +36,7 @@ app.use(session({
     httpOnly: true, // 默认配置
     maxAge: 24*60*60*1000 // 24小时
   },
- // store: sessionStore
+  store: sessionStore
 }))
 
 // 注册完，接下来就是路由处理

@@ -7,6 +7,4 @@ redisClient.on('error', err => {
     console.log(err)
 })
 
-module.exports = {
-    redisClient
-}
+module.exports = redisClient
