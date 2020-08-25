@@ -7,6 +7,7 @@ const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
+const { REDIS_CONF } = require('./conf/db')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
@@ -45,7 +46,8 @@ app.use(session({ // session配置
     maxAge: 24*60*60*1000
   },
   store: redisStore({ // redis配置
-    all: '127.0.0.0:6379' // 指向本地的redis地址（暂时写死）
+   // all: '127.0.0.0:6379' // 指向本地的redis地址（暂时写死）
+   all: `${REDIS_CONF.host}:${REDIS_CONF.port}`
   })
 }))
 
