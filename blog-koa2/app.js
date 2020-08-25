@@ -5,6 +5,8 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const session = require('koa-generic-session')
+const redisStore = require('koa-redis')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
@@ -33,6 +35,19 @@ app.use(async (ctx, next) => {
   const ms = new Date() - start
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
+
+// session配置
+app.keys = ['ODST123!#'] // 设置密匙
+app.use(session({ // session配置
+  cookie: {
+    path: '/',
+    httpOnly: true,
+    maxAge: 24*60*60*1000
+  },
+  store: redisStore({ // redis配置
+    all: '127.0.0.0:6379' // 指向本地的redis地址（暂时写死）
+  })
+}))
 
 // routes
 app.use(index.routes(), index.allowedMethods())
