@@ -1,14 +1,19 @@
 const router = require('koa-router')()
+const { loginCheck } = require('../controller/user')
+const { SuccessModel, ErrorModel } = require('../model/resModel')
 
 router.prefix('/api/user') // 设置父路径
 
 router.post('/login', async function(ctx, next) {
     const { username, password } = ctx.request.body
-    ctx.body = {
-        errno: 0,
-        username,
-        password
-    }
+    const resultData = await loginCheck(username, password)
+    if (resultData.username) { 
+        ctx.session.username = resultData.username
+        ctx.session.realname = resultData.realname
+        ctx.body = new SuccessModel()
+        return
+    } // 其实还是可以省略else，直接像下面这样子写就行，反正不经过if的就走这里。
+    ctx.body = new ErrorModel('登录失败')
 })
 
 router.get('/session-test', async function(ctx, next) { // 测试session是否保存到redis
