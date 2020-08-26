@@ -45,7 +45,7 @@ router.post('/update', loginCheck, async function(ctx, next) {
     }
 })
 
-router.post('/del', loginCheck, function(ctx, next) {
+router.post('/del', loginCheck, async function(ctx, next) {
     const author = ctx.session.username
     const deleteData = await delBlog(ctx.query.id, author)
     if (deleteData) {

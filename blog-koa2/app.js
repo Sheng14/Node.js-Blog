@@ -8,6 +8,9 @@ const logger = require('koa-logger')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
 const { REDIS_CONF } = require('./conf/db')
+const fs = require('fs')
+const path = require('path')
+const morgan = require('koa-morgan')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
@@ -36,6 +39,21 @@ app.use(async (ctx, next) => {
   const ms = new Date() - start
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
+
+const ENV = process.env.NODE_ENV // 获取当前的环境
+if (ENV !== 'production') { // 即生产环境下
+  app.use(morgan('dev',{
+    stream: process.stdout // 直接在控制台输出
+  }))
+} else { // 线上环境
+  const fileName = path.join(__dirname, '/logs', 'access.log')
+  const writeStream = fs.createWriteStream(fileName, {
+    flags: 'a'
+  }) // 获取文件名和流对象
+  app.use(morgan('combined', {
+    stream: writeStream // 写入到文件
+  }))
+}
 
 // session配置
 app.keys = ['ODST123!#'] // 设置密匙
