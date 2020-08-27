@@ -16,7 +16,7 @@ const server = http.createServer((req, res) => {
     res.end(
         JSON.stringify({
             errno: 0,
-            data: 'welcome to PM2! we are the god!'
+            data: 'welcome to PM2! we are the god! let us see what can the watch do'
         })
     )
 })
