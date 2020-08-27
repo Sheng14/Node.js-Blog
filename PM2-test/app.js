@@ -7,6 +7,11 @@ const server = http.createServer((req, res) => {
     // 模拟错误
     console.error('errnor', Date.now())
 
+    // 模拟异常
+    if (req.url === '/err') {
+        throw new Error('模拟异常/err')
+    }
+
     res.setHeader('Content-type', 'application/json')
     res.end(
         JSON.stringify({
